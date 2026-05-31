@@ -1,0 +1,98 @@
+# Configuration defaults for the bulk email sender.
+# Copy contents to a new file config.toml and make changes there.
+# All strings (except where noted) are personalizable with input CSV values.
+
+# Set this to "actually send all emails" to actually send email.
+# Any other value will not send any email.
+modus_operandi = "just testing"
+# Options are "ERROR", "WARNING", "INFO" AND "DEBUG".
+logging_level = "INFO"
+
+
+# If an absolute path is not given, a path is relative to the folder where
+# you found this file.
+[paths]
+# Path to personalization entry CSV file. Each row is for one personal email
+# message. You can add custom columns and use them here in the config.
+# This string can't be personalized.
+input_csv = "input/names_example.csv"
+
+# The given template will be personalized and this new file will be stored at
+# the path `attachment` defines. If `template` is left empty, no personalized
+# letter creation will take place.
+template = "input/template_example.pdf"
+
+# An attachment file can be created from a template or you can use pregenerated
+# files or just a single file if you define a static attachment path. If
+# `attachment` is left empty, emails won't have an attachment.
+# Note that all letters are created before any email is sent. Thus you better
+# personalize the file paths so they don't collide.
+attachment = "output/letter_to_{letter_receiver_first_name}_{letter_receiver_last_name}.pdf"
+
+# Copy font files here or set this to your system font folder.
+font_folder = "fonts"
+
+# You can add more lines of text by copying the example below and
+# creating more `[[line_of_text]]` entries. Or you can remove the
+# entries to not add any personalization text into the template.
+[[line_of_text]]
+text = "Hi {letter_receiver_first_name} {letter_receiver_last_name},"
+# The location of the text.
+# --------
+# |      |
+# |  A4  |
+# |      |
+# |      |
+# 0-------
+# ↑
+# Origin is at the bottom left corner of the paper.
+# x grows to the right and y upwards.
+# If the location is off, just try out different values.
+x = 71.5
+y = 600
+# Font filename in the font_folder (or a path/to/font.ttf under the folder).
+# Only TrueType fonts are supported.
+font = "droitsans.ttf"
+# Font size in pt.
+size = 11
+
+
+# Configuration for sending email.
+
+# Your email account. No strings within this table are personalizable.
+[email.server]
+account = "example@example.com"
+# Never commit this file into version control with your password in it.
+# Remember to revoke your App password after use, so any accidental
+# leftover references to it will be invalid.
+password = "Your email account password here"
+
+# These aren't likely to change if you use Gmail.
+address = "smtp.gmail.com"
+port = 465
+
+
+[email.message]
+# Most likely you will want your sender email to match your account.
+from = '"First Last" <example@example.com>'
+to = '"{email_to_first_name} {email_to_last_name}" <{email_to_address}>'
+
+# Separate multiple carbon copy recipients with a semicolon (;).
+# If you send CC's, you'll likely want to set this to e.g. "{email_cc}"
+# and add an `email_cc` column to your input CSV with values such as
+# "First Last <example@example.com;Another Dude <example@example.com>".
+cc = ""
+
+subject = "Very personal greetings"
+# Keep lines at most 72 chars long; no longer than this line. ---------|
+body = """Hi {email_to_first_name},
+
+attached is a letter for you to forward to {letter_receiver_first_name}.
+
+Greetings,
+--
+Joni Doe
+
++358 12 345 6789
+example@example.com
+"""

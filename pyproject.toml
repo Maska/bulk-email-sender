@@ -1,0 +1,32 @@
+[project]
+version = "1.0.0"
+name = "bulk-email-sender"
+requires-python = ">=3.11"
+dependencies = [
+    "pypdf>=6.12.2",
+    "reportlab>=4.5.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.15",
+]
+
+[tool.ruff]
+line-length = 79
+# Handle imports from these folders as first-party
+src = [
+    "src",
+]
+
+[tool.ruff.lint]
+extend-select = [
+    "I",       # Check import order.
+    "ALL",
+]
+ignore = [
+    "G004",    # Logging statement uses f-string
+    # These have a conflicting sibling rule and are a matter of style.
+    "D203",    # 1 blank line required before class docstring
+    "D213",    # Multi-line docstring summary should start at the second line
+]
