@@ -58,6 +58,9 @@ def _create_message(config: dict) -> EmailMessage:
         msg["Cc"] = cc.replace(";", ",")
 
     msg.set_content(msg_cfg["body"])
+    if body_html := msg_cfg["body_html"]:
+        msg.add_alternative(body_html, subtype="html")
+
     if (path := config["paths"]["attachment"]) and path.is_file():
         _attach_file(msg, path)
     return msg

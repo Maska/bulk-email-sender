@@ -98,3 +98,31 @@ Joni Doe
 +358 12 345 6789
 example@example.com
 """
+
+# Leave this a empty to send a normal, plain text email.
+body_html = """"""
+# If you must, you can also include an HTML body. Just make sure the
+# normal body has all the same information. There is an example below.
+# body_html = """
+# <html>
+# <head>
+# <style>
+#   * {{font-family: "Comic Sans MS", "Comic Sans";}}
+# </style>
+# </head>
+# <body>
+#
+# <p>Hi {email_to_first_name},</p>
+# <p>attached is a letter for you to forward to {letter_receiver_first_name}.</p>
+# <p>
+#     Greetings,<br />
+#     --<br />
+#     Joni Doe<br />
+#     <br />
+#     +358 12 345 6789<br />
+#     example@example.com
+# </p>
+#
+# </body>
+# </html>
+# """
