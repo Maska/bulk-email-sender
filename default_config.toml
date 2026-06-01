@@ -50,6 +50,8 @@ text = "Hi {letter_receiver_first_name} {letter_receiver_last_name},"
 # If the location is off, just try out different values.
 x = 71.5
 y = 600
+# Write to this page. The page number of the first page is 1.
+page = 1
 # Font filename in the font_folder (or a path/to/font.ttf under the folder).
 # Only TrueType fonts are supported.
 font = "droitsans.ttf"

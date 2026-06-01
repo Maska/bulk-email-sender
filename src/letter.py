@@ -49,8 +49,12 @@ def _draw_personalization(config: dict) -> io.BytesIO:
     """Create a PDF with personal texts and return it as an in-memory file."""
     memory_file = io.BytesIO()
     canvas = Canvas(memory_file, pagesize=A4)
-    tables = config.get("line_of_text", [])
+    tables = sorted(config.get("line_of_text", []), key=lambda x: x["page"])
     for table in tables:
+        pages_to_skip = table["page"] - canvas.getPageNumber()
+        for _ in range(pages_to_skip):
+            canvas.showPage()
+
         font = table["font"]
         registerFont(TTFont(font, config["paths"]["font_folder"] / font))
         canvas.setFont(font, table["size"])
@@ -67,9 +71,8 @@ def _draw_personalization(config: dict) -> io.BytesIO:
 
 def _merge(template: Path, personalization: io.BytesIO, output: Path) -> None:
     """Watermark template with given personalization. Write to output path."""
-    stamp = PdfReader(personalization).pages[0]
     writer = PdfWriter()
-    reader = PdfReader(template)
-    writer.append(reader, pages=None)
-    writer.pages[0].merge_page(stamp)
+    writer.append(template)
+    for target, stamp in zip(writer.pages, PdfReader(personalization).pages):
+        target.merge_page(stamp)
     writer.write(output)
