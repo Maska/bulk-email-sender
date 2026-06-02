@@ -1,10 +1,9 @@
 """Send emails."""
 
-import functools
+import contextlib
 import logging
 import mimetypes
 import smtplib
-from collections.abc import Callable
 from email.message import EmailMessage
 from pathlib import Path
 
@@ -16,18 +15,19 @@ LOG = logging.getLogger(__name__)
 def send_messages(entries: list[dict], config: dict) -> None:
     """Send the messages over one connection."""
     LOG.info(f"Sending {len(entries)} messages")
-    send_all_messages = functools.partial(_send_messages, entries, config)
-    _while_logged_in(send_all_messages, config["email"]["server"])
+    with _log_in(config["email"]["server"]) as server:
+        _send_messages(entries, config, server)
     LOG.info("All emails sent")
 
 
-def _while_logged_in(send_func: Callable, config: dict) -> None:
-    """Log into an email server. Call the send func with the server as arg."""
+@contextlib.contextmanager
+def _log_in(config: dict) -> None:
+    """Log into an email server and yield the logged-in server."""
     LOG.info(f"Connecting to {config['address']}:{config['port']}")
     with smtplib.SMTP_SSL(config["address"], config["port"]) as server:
         LOG.info(f"Logging in as {config['account']}")
         server.login(config["account"], config["password"])
-        send_func(server)
+        yield server
 
 
 def _send_messages(
